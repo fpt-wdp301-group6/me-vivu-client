@@ -1,5 +1,6 @@
 'use client';
-import { Button, Container, IconButton } from '@mui/material';
+import { useAuth } from '@/hooks';
+import { Avatar, Button, Container, IconButton } from '@mui/material';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,6 +9,7 @@ import { TiThMenu } from 'react-icons/ti';
 
 const Header = () => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
+    const { user } = useAuth();
 
     useLayoutEffect(() => {
         const handleScroll = () => {
@@ -32,9 +34,15 @@ const Header = () => {
                     <NavLink href="/">Trang chủ</NavLink>
                     <NavLink href="/lich-chieu">Lịch chiếu</NavLink>
                     <NavLink href="/phim-chieu">Phim chiếu</NavLink>
-                    <Button component={Link} href="/dang-nhap">
-                        Đăng nhập
-                    </Button>
+                    {user ? (
+                        <IconButton size="small">
+                            <Avatar src={user.avatar} alt={user.name} sx={{ width: 36, height: 36 }} />
+                        </IconButton>
+                    ) : (
+                        <Button component={Link} href="/dang-nhap">
+                            Đăng nhập
+                        </Button>
+                    )}
                 </div>
                 <div className="md:hidden">
                     <IconButton>
