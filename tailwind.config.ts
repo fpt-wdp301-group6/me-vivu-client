@@ -31,7 +31,7 @@ const config: Config = {
                 error: 'var(--error)',
                 dark: 'var(--dark)',
             },
-            maxWidth: {
+            width: {
                 192: '768px',
             },
             aspectRatio: {
