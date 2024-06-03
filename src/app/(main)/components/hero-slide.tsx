@@ -32,7 +32,7 @@ const HeroSlide = () => {
                             <Skeleton animation="wave" variant="rectangular" width="100vw" height="100vh" />
                         </SwiperSlide>
                     ) : (
-                        (data.results as Movie[])
+                        Array.from(data.results as Movie[])
                             .sort((a, b) => b.vote_average - a.vote_average)
                             .slice(0, 10)
                             .map((movie) => (

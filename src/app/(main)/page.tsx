@@ -7,7 +7,8 @@ const Home = () => {
         <div>
             <HeroSlide />
             <Container className="py-20">
-                <MovieCarousel url="/movie/upcoming?region=VN" heading="Phim sắp chiếu" />
+                <MovieCarousel url="/movie/upcoming?region=VN" heading="Phim sắp chiếu" className="mb-12" />
+                <MovieCarousel url="/movie/now_playing?region=VN" heading="Phim đang chiếu" />
             </Container>
         </div>
     );
