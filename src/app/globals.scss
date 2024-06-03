@@ -13,6 +13,7 @@
     --warning: #f9ea0c;
     --error: #ff592b;
 
+    // Pagination
     --swiper-pagination-bullet-inactive-color: var(--white);
     --swiper-pagination-color: var(--primary);
     --swiper-pagination-bullet-inactive-opacity: 0.7;
@@ -25,5 +26,11 @@
 
     &-active {
         width: calc(var(--swiper-pagination-bullet-size) * 2);
+    }
+}
+
+.swiper-button {
+    &-disabled {
+        opacity: 0;
     }
 }

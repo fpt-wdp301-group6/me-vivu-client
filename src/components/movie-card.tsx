@@ -55,7 +55,7 @@ const MovieCard: FC<MovieCardProps> = ({ data }) => {
                 </Tooltip>
             </div>
             <Link
-                href={`/phim-chieu/${data.id}`}
+                href={`/phim-chieu/${formats.slugify(data.title)}-${data.id}`}
                 className="mt-5 font-semibold line-clamp-2 hover:text-primary transition-colors"
                 title={data.title}
             >

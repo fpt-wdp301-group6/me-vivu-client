@@ -20,6 +20,19 @@ const date = (value: string | Date) => {
     return date.toLocaleDateString('vi-VN', options);
 };
 
-const formats = { date };
+import slugifyReact from 'slugify';
+
+const slugify = (value: string) => {
+    return slugifyReact(value, {
+        replacement: '-',
+        remove: /[*+~.()'"!:@]/g,
+        lower: true,
+        strict: false,
+        locale: 'vi',
+        trim: true,
+    });
+};
+
+const formats = { date, slugify };
 
 export default formats;
