@@ -69,7 +69,7 @@ const TrailerModalContent: FC<TrailerModalContentProps> = ({ movie, onClose }) =
     const video = data?.results[0];
 
     return (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-192 w-full mx-3">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-192 max-w-full px-3">
             <motion.div
                 variants={variants}
                 initial="initial"

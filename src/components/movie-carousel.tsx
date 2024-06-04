@@ -20,7 +20,7 @@ interface MovieCarouselProps {
 const MovieCarousel: FC<MovieCarouselProps> = ({ url, heading, className, id = '' }) => {
     const { data, isLoading, error } = useSWR(url, fetcher);
 
-    const navButtonStyles = 'absolute top-1/2 -translate-y-1/2 transition-opacity';
+    const navButtonStyles = 'absolute top-1/2 -translate-y-1/2 transition-opacity max-md:hidden';
 
     return (
         <div id={id} className={clsx('relative', className)}>

@@ -1,7 +1,12 @@
+import { Metadata } from 'next';
 import { Button, Stack } from '@mui/material';
 import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
 import RegisterForm from './register-form';
+
+export const metadata: Metadata = {
+    title: 'Đăng ký',
+};
 
 const Register = () => {
     return (
