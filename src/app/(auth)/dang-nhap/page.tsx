@@ -1,7 +1,12 @@
+import { Metadata } from 'next';
 import { Button, Stack } from '@mui/material';
 import { FcGoogle } from 'react-icons/fc';
 import LoginForm from './login-form';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+    title: 'Đăng nhập',
+};
 
 const Login = () => {
     return (

@@ -11,8 +11,12 @@ import './globals.scss';
 const montserrat = Montserrat({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-    title: 'meVivu',
-    description: 'Vi vu đặt vé cùng online',
+    title: {
+        template: '%s | meVivu',
+        default: 'meVivu',
+        absolute: 'Vi vu đặt vé online | meVivu',
+    },
+    description: 'Vi vu đặt vé online',
 };
 
 export default function RootLayout({
