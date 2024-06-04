@@ -1,6 +1,6 @@
 'use client';
 import { ElementRef, FC, useRef } from 'react';
-import { MovieImage, TrailerModal } from '@/components';
+import { MovieImage, ReadMore, TrailerModal } from '@/components';
 import Movie from '@/types/movie';
 import { constants } from '@/utils';
 import { Button, Container } from '@mui/material';
@@ -64,7 +64,9 @@ const SlideItem: FC<SlideItemProps> = ({ data }) => {
                             <motion.h2 className="text-6xl font-bold" variants={textVariants}>
                                 {data.title}
                             </motion.h2>
-                            <motion.p variants={textVariants}>{data.overview}</motion.p>
+                            <motion.p variants={textVariants}>
+                                <ReadMore>{data.overview}</ReadMore>
+                            </motion.p>
                             <motion.div className="flex gap-4" variants={textVariants}>
                                 <Button size="large">Đặt vé ngay</Button>
                                 <Button
