@@ -1,3 +1,5 @@
+import Genre from './genre';
+
 interface Movie {
     id: number;
     adult: boolean;
@@ -8,6 +10,7 @@ interface Movie {
     vote_average: number;
     vote_count: number;
     poster_path: string;
+    genres: Genre[];
 }
 
 export default Movie;
