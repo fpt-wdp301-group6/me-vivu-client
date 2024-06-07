@@ -38,7 +38,7 @@ const MovieDetail: FC<MovieDetailProps> = async ({ params }) => {
     // TODO: lấy movie ở đây để làm lại
     return (
         <div>
-            <Detail id={movieId} />
+            <Detail data={movie} />
         </div>
     );
 };
