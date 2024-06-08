@@ -64,9 +64,9 @@ const SlideItem: FC<SlideItemProps> = ({ data }) => {
                             <motion.h2 className="text-6xl font-bold" variants={textVariants}>
                                 {data.title}
                             </motion.h2>
-                            <motion.p variants={textVariants}>
+                            <motion.div variants={textVariants}>
                                 <ReadMore>{data.overview}</ReadMore>
-                            </motion.p>
+                            </motion.div>
                             <motion.div className="flex gap-4" variants={textVariants}>
                                 <Button size="large">Đặt vé ngay</Button>
                                 <Button
