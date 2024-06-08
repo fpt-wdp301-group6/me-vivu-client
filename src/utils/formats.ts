@@ -8,7 +8,7 @@ const date = (value: string | Date) => {
     }
 
     if (isNaN(date.getTime())) {
-        throw new Error('Invalid date');
+        return '';
     }
 
     const options: Intl.DateTimeFormatOptions = {
@@ -33,6 +33,15 @@ const slugify = (value: string) => {
     });
 };
 
-const formats = { date, slugify };
+const genre = (value: string) => {
+    if (value.trim().startsWith('Phim')) {
+        const words = value.split(' ');
+        words.shift();
+        return words.join(' ');
+    }
+    return value;
+};
+
+const formats = { date, slugify, genre };
 
 export default formats;

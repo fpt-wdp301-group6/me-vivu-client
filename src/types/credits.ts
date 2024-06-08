@@ -3,12 +3,13 @@ export interface CastOrCrew {
     name: string;
     profile_path: string;
     popularity: number;
+    character: string;
 }
 
-interface Actor {
+interface Credits {
     cast: CastOrCrew[];
     id: number;
     crew: CastOrCrew[];
 }
 
-export default Actor;
+export default Credits;

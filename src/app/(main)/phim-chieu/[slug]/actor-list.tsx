@@ -1,34 +1,49 @@
 'use client';
-
 import { FC } from 'react';
-import { Metadata } from 'next';
 import { fetcher } from '@/configs/tmdb';
-import { notFound } from 'next/navigation';
-import Detail from './detail';
-import CastOrCrew from '@/types/actor';
 import useSWR from 'swr';
-import Actor from '@/types/actor';
+import Actor from '@/types/credits';
 import ActorCard from '@/components/actor-card';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
 
 interface ActorListProps {
-    id: number;
+    movieId: number;
 }
 
-const ActorList: FC<ActorListProps> = ({ id }) => {
-    const { data, isLoading } = useSWR<Actor>(`/movie/${id}/credits`, fetcher);
-    const topFiveCasts = data?.cast.sort((a, b) => b.popularity - a.popularity).slice(0, 5);
+const ActorList: FC<ActorListProps> = ({ movieId }) => {
+    const { data, isLoading } = useSWR<Actor>(`/movie/${movieId}/credits`, fetcher);
+
     return (
-        <>
-            {!isLoading ? (
-                <div className="flex gap-3">
-                    {topFiveCasts?.map((cast) => (
-                        <ActorCard key={cast.id} cast={cast} />
-                    ))}
-                </div>
-            ) : (
-                <div>Is Loading</div>
-            )}
-        </>
+        <div>
+            <Swiper
+                modules={[Autoplay]}
+                autoplay={{ delay: 4000 }}
+                slidesPerView={2}
+                spaceBetween={10}
+                slidesPerGroupSkip={1}
+                breakpoints={{
+                    640: {
+                        slidesPerView: 3,
+                        spaceBetween: 10,
+                        slidesPerGroup: 1,
+                    },
+                    768: {
+                        slidesPerView: 4,
+                        spaceBetween: 15,
+                        slidesPerGroup: 1,
+                    },
+                }}
+            >
+                {isLoading
+                    ? Array.from({ length: 6 }).map((_, index) => <SwiperSlide key={index}>Loading</SwiperSlide>)
+                    : data?.cast.map((actor) => (
+                          <SwiperSlide key={actor.id}>
+                              <ActorCard cast={actor} />
+                          </SwiperSlide>
+                      ))}
+            </Swiper>
+        </div>
     );
 };
 

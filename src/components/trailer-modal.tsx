@@ -6,6 +6,7 @@ import MovieImage from './movie-image';
 import { motion } from 'framer-motion';
 import useSWR from 'swr';
 import { fetcher } from '@/configs/tmdb';
+import ReadMore from './read-more';
 
 interface TrailerModalProps {
     movie: Movie;
@@ -107,7 +108,7 @@ const TrailerModalContent: FC<TrailerModalContentProps> = ({ movie, onClose }) =
                     </div>
                     <Stack gap={1}>
                         <h3 className="text-xl font-semibold">{movie.title}</h3>
-                        <p className="text-sm">{movie.overview}</p>
+                        <ReadMore className="text-sm">{movie.overview}</ReadMore>
                         <Stack direction="row" gap={1}>
                             <Button>Đặt vé</Button>
                             <Button color="secondary" onClick={onClose}>
