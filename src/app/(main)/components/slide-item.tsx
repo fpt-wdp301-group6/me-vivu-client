@@ -56,7 +56,7 @@ const SlideItem: FC<SlideItemProps> = ({ data }) => {
                 <Container>
                     <div className="flex items-center gap-8">
                         <motion.div
-                            className="flex flex-col gap-8"
+                            className="flex flex-col gap-8 flex-1"
                             variants={textVariants}
                             initial="initial"
                             whileInView="animate"
