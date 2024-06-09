@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { fetcher } from '@/configs/tmdb';
 import useSWR from 'swr';
 import Actor from '@/types/credits';
-import ActorCard from '@/components/actor-card';
+import ActorCard, { ActorCardSkeleton } from '@/components/actor-card';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 
@@ -12,7 +12,11 @@ interface ActorListProps {
 }
 
 const ActorList: FC<ActorListProps> = ({ movieId }) => {
-    const { data, isLoading } = useSWR<Actor>(`/movie/${movieId}/credits`, fetcher);
+    const { data, isLoading } = useSWR<Actor>(`/movie/${movieId}/credits`, fetcher, {
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+    });
 
     return (
         <div>
@@ -36,7 +40,11 @@ const ActorList: FC<ActorListProps> = ({ movieId }) => {
                 }}
             >
                 {isLoading
-                    ? Array.from({ length: 6 }).map((_, index) => <SwiperSlide key={index}>Loading</SwiperSlide>)
+                    ? Array.from({ length: 6 }).map((_, index) => (
+                          <SwiperSlide key={index}>
+                              <ActorCardSkeleton />
+                          </SwiperSlide>
+                      ))
                     : data?.cast.map((actor) => (
                           <SwiperSlide key={actor.id}>
                               <ActorCard cast={actor} />
