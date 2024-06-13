@@ -18,7 +18,11 @@ interface MovieCarouselProps {
 }
 
 const MovieCarousel: FC<MovieCarouselProps> = ({ url, heading, className, id = '' }) => {
-    const { data, isLoading, error } = useSWR(url, fetcher);
+    const { data, isLoading, error } = useSWR(url, fetcher, {
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+    });
 
     const navButtonStyles = 'absolute top-1/2 -translate-y-1/2 transition-opacity max-md:hidden';
 

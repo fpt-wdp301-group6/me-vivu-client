@@ -18,15 +18,18 @@ interface ThemeProviderProps {
 const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     const [mode, setMode] = useState<ThemeMode>(ThemeMode.Dark);
     const activeTheme = useMemo(() => theme(mode), [mode]);
-    const toggleTheme = useCallback(
-        () => setMode(mode === ThemeMode.Light ? ThemeMode.Light : ThemeMode.Light),
-        [mode],
-    );
+    const toggleTheme = useCallback(() => setMode(mode === ThemeMode.Light ? ThemeMode.Light : ThemeMode.Dark), [mode]);
 
     return (
         <ThemeContext.Provider value={{ mode, toggleTheme }}>
             <MuiThemeProvider theme={activeTheme}>
-                <div id="root" className={clsx({ 'dark text-white': mode === ThemeMode.Dark })}>
+                <div
+                    id="root"
+                    className={clsx(
+                        { 'dark text-white': mode === ThemeMode.Dark },
+                        'min-h-screen dark:bg-dark dark:text-white',
+                    )}
+                >
                     {children}
                 </div>
             </MuiThemeProvider>

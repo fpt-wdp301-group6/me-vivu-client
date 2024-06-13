@@ -1,11 +1,12 @@
 'use client';
-import { FC, forwardRef, useImperativeHandle, useState } from 'react';
+import { FC, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Button, Modal, Skeleton, Stack } from '@mui/material';
 import Movie from '@/types/movie';
 import MovieImage from './movie-image';
 import { motion } from 'framer-motion';
 import useSWR from 'swr';
 import { fetcher } from '@/configs/tmdb';
+import ReadMore from './read-more';
 
 interface TrailerModalProps {
     movie: Movie;
@@ -66,7 +67,25 @@ const TrailerModalContent: FC<TrailerModalContentProps> = ({ movie, onClose }) =
         revalidateOnReconnect: false,
     });
 
-    const video = data?.results[0];
+    const [fallbackData, setFallbackData] = useState<any>(null);
+    const [isFetchingFallback, setIsFetchingFallback] = useState(false);
+
+    useEffect(() => {
+        if (!isLoading && data && (!data.results || data.results.length === 0) && !isFetchingFallback) {
+            setIsFetchingFallback(true);
+            fetcher(`/movie/${movie.id}/videos?language=en-US`)
+                .then((fallbackResponse) => {
+                    setFallbackData(fallbackResponse);
+                    setIsFetchingFallback(false);
+                })
+                .catch(() => {
+                    setIsFetchingFallback(false);
+                });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoading, data, movie.id]);
+
+    const video = data?.results[0] || fallbackData?.results[0];
 
     return (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-192 max-w-full px-3">
@@ -77,7 +96,7 @@ const TrailerModalContent: FC<TrailerModalContentProps> = ({ movie, onClose }) =
                 className="bg-dark text-white rounded-lg overflow-hidden"
             >
                 <div className="aspect-video">
-                    {!isLoading ? (
+                    {!isLoading && !isFetchingFallback ? (
                         video ? (
                             <iframe
                                 width="100%"
@@ -107,7 +126,7 @@ const TrailerModalContent: FC<TrailerModalContentProps> = ({ movie, onClose }) =
                     </div>
                     <Stack gap={1}>
                         <h3 className="text-xl font-semibold">{movie.title}</h3>
-                        <p className="text-sm">{movie.overview}</p>
+                        <ReadMore className="text-sm">{movie.overview}</ReadMore>
                         <Stack direction="row" gap={1}>
                             <Button>Đặt vé</Button>
                             <Button color="secondary" onClick={onClose}>
