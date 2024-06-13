@@ -36,12 +36,12 @@ const MovieCard: FC<MovieCardProps> = ({ data }) => {
                 <div className="absolute left-0 bottom-0 translate-x-1/2 translate-y-1/2 bg-white p-1 rounded-full">
                     <CircularProgress
                         variant="determinate"
-                        color={colorVote(data.vote_average)}
-                        value={data.vote_average * 10}
+                        color={colorVote(data.vote_average || 0)}
+                        value={(data.vote_average ?? 0) * 10}
                         className="block"
                     />
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-dark text-sm font-semibold">
-                        {data.vote_average.toFixed(1)}
+                        {data.vote_average?.toFixed(1)}
                     </span>
                 </div>
                 <Tooltip title="Xem trailer">

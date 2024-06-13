@@ -1,4 +1,4 @@
-import MoviePager from './MoviePager';
+import MoviePager from './movie-pager';
 
 const MovieList = () => {
     return (
