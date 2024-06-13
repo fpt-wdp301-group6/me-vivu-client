@@ -1,4 +1,4 @@
-const date = (value: string | Date) => {
+const date = (value: string | Date = '') => {
     let date: Date;
 
     if (typeof value === 'string') {

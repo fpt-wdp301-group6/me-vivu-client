@@ -15,7 +15,7 @@ interface MovieCardProps {
 const MovieCard: FC<MovieCardProps> = ({ data }) => {
     const trailerRef = useRef<ElementRef<typeof TrailerModal>>(null);
 
-    const colorVote = (value: number) => {
+    const colorVote = (value: number = 0) => {
         if (value > 7) return 'success';
         if (value > 4) return 'warning';
         return 'error';
@@ -37,11 +37,11 @@ const MovieCard: FC<MovieCardProps> = ({ data }) => {
                     <CircularProgress
                         variant="determinate"
                         color={colorVote(data.vote_average)}
-                        value={data.vote_average * 10}
+                        value={(data.vote_average || 0) * 10}
                         className="block"
                     />
                     <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-dark text-sm font-semibold">
-                        {data.vote_average.toFixed(1)}
+                        {data.vote_average?.toFixed(1) || '0.0'}
                     </span>
                 </div>
                 <Tooltip title="Xem trailer">
