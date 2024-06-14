@@ -1,6 +1,7 @@
 import { MovieCarousel } from '@/components';
 import HeroSlide from './components/hero-slide';
 import { Container } from '@mui/material';
+import { ShowtimesBox } from '@/components';
 
 const Home = () => {
     return (
@@ -13,7 +14,13 @@ const Home = () => {
                     id="upcoming"
                     className="mb-12"
                 />
-                <MovieCarousel url="/movie/now_playing?region=VN" heading="Phim đang chiếu" id="now-playing" />
+                <MovieCarousel
+                    url="/movie/now_playing?region=VN"
+                    heading="Phim đang chiếu"
+                    id="now-playing"
+                    className="mb-12"
+                />
+                <ShowtimesBox />
             </Container>
         </div>
     );

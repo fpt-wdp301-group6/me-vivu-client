@@ -33,7 +33,7 @@ const HeroSlide = () => {
                         </SwiperSlide>
                     ) : (
                         Array.from(data.results as Movie[])
-                            .sort((a, b) => b.vote_average - a.vote_average)
+                            .sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0))
                             .slice(0, 10)
                             .map((movie) => (
                                 <SwiperSlide key={movie.id}>

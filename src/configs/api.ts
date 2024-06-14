@@ -47,4 +47,6 @@ api.interceptors.response.use(
     },
 );
 
+export const fetcher = (url: string) => api.get(url).then((res) => res as any);
+
 export default api;
