@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
-import { Button, Stack } from '@mui/material';
-import { FcGoogle } from 'react-icons/fc';
+import { Stack } from '@mui/material';
 import LoginForm from './login-form';
 import Link from 'next/link';
+import LoginOthers from './login-others';
 
 export const metadata: Metadata = {
     title: 'Đăng nhập',
@@ -17,9 +17,7 @@ const Login = () => {
                     me<span className="text-primary">Vivu</span>
                 </Link>
             </h2>
-            <Button variant="outlined" color="secondary" size="large" sx={{ fontWeight: 700 }} startIcon={<FcGoogle />}>
-                Đăng nhập với Google
-            </Button>
+            <LoginOthers />
             <span className="text-sm dark:text-gray-400 text-center">hoặc Đăng nhập với email</span>
             <LoginForm />
             <span className="text-sm dark:text-gray-400 text-center">

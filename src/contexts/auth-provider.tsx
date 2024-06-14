@@ -3,7 +3,7 @@ import api from '@/configs/api';
 import { useMount } from '@/hooks';
 import User from '@/types/user';
 import { constants } from '@/utils';
-import { FC, ReactNode, createContext, useReducer, Dispatch } from 'react';
+import { FC, ReactNode, createContext, useReducer, Dispatch, useRef } from 'react';
 
 interface AuthState {
     user: User | null;
@@ -53,6 +53,8 @@ interface AuthContextProps extends AuthState {
     dispatch: Dispatch<AuthAction>;
     // eslint-disable-next-line no-unused-vars
     login: (credentials: { email: string; password: string }) => Promise<void>;
+    // eslint-disable-next-line no-unused-vars
+    loginByOthers: (data: any) => Promise<void>;
     logout: () => Promise<void>;
 }
 
@@ -64,22 +66,42 @@ interface AuthProviderProps {
 
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
+    const fetchLoginCalled = useRef(false);
 
-    useMount(async () => {
+    useMount(() => {
+        if (fetchLoginCalled.current) return;
+
+        const fetchLogin = async () => {
+            try {
+                const response = await api.post('/auth/login-refresh');
+                localStorage.setItem('token', response.data.token);
+                dispatch({ type: 'LOGIN_FULFILLED', payload: response.data });
+            } catch (error: any) {
+                dispatch({ type: 'LOGIN_REJECT' });
+            }
+        };
+
         dispatch({ type: 'LOGIN_PENDING' });
-        try {
-            const response = await api.post('/auth/login-refresh');
-            localStorage.setItem('token', response.data.token);
-            dispatch({ type: 'LOGIN_FULFILLED', payload: response.data });
-        } catch (error: any) {
-            dispatch({ type: 'LOGIN_REJECT' });
-        }
+        fetchLogin();
+        fetchLoginCalled.current = true;
     });
 
     const login = async (credentials: { email: string; password: string }) => {
         dispatch({ type: 'LOGIN_PENDING' });
         try {
             const response = await api.post('/auth/login', credentials);
+            localStorage.setItem('token', response.data.token);
+            dispatch({ type: 'LOGIN_FULFILLED', payload: response.data });
+        } catch (error: any) {
+            dispatch({ type: 'LOGIN_REJECT', payload: error?.data?.message || constants.sthWentWrong });
+            throw error;
+        }
+    };
+
+    const loginByOthers = async (data: any) => {
+        dispatch({ type: 'LOGIN_PENDING' });
+        try {
+            const response = await api.post('/auth/login/others', data);
             localStorage.setItem('token', response.data.token);
             dispatch({ type: 'LOGIN_FULFILLED', payload: response.data });
         } catch (error: any) {
@@ -97,7 +119,11 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         }
     };
 
-    return <AuthContext.Provider value={{ ...state, dispatch, login, logout }}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={{ ...state, dispatch, login, logout, loginByOthers }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export default AuthProvider;

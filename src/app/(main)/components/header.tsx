@@ -1,15 +1,17 @@
 'use client';
 import { useAuth } from '@/hooks';
-import { Avatar, Button, Container, IconButton } from '@mui/material';
+import { Avatar, Button, Container, IconButton, Menu, MenuItem } from '@mui/material';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FC, useLayoutEffect, useState } from 'react';
+import { FC, MouseEvent, useLayoutEffect, useState } from 'react';
 import { TiThMenu } from 'react-icons/ti';
 
 const Header = () => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
-    const { user } = useAuth();
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const { user, logout } = useAuth();
 
     useLayoutEffect(() => {
         const handleScroll = () => {
@@ -19,6 +21,19 @@ const Header = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = async () => {
+        await logout();
+        handleClose();
+    };
 
     return (
         <header
@@ -35,7 +50,7 @@ const Header = () => {
                     <NavLink href="/lich-chieu">Lịch chiếu</NavLink>
                     <NavLink href="/phim-chieu">Phim chiếu</NavLink>
                     {user ? (
-                        <IconButton size="small">
+                        <IconButton size="small" onClick={handleClick}>
                             <Avatar src={user.avatar} alt={user.name} sx={{ width: 36, height: 36 }} />
                         </IconButton>
                     ) : (
@@ -49,6 +64,27 @@ const Header = () => {
                         <TiThMenu />
                     </IconButton>
                 </div>
+                <Menu
+                    id="user-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                    }}
+                    anchorOrigin={{
+                        horizontal: 'right',
+                        vertical: 'bottom',
+                    }}
+                    transformOrigin={{
+                        horizontal: 'right',
+                        vertical: 'top',
+                    }}
+                >
+                    <MenuItem onClick={handleClose}>Tài khoản</MenuItem>
+                    <MenuItem onClick={handleClose}>Lịch sử</MenuItem>
+                    <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                </Menu>
             </Container>
         </header>
     );
