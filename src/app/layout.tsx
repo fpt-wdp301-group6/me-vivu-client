@@ -6,6 +6,7 @@ import AuthProvider from '@/contexts/auth-provider';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import 'simplebar-react/dist/simplebar.min.css';
 import './globals.scss';
 
 const montserrat = Montserrat({ subsets: ['latin'] });

@@ -8,6 +8,7 @@ import { ChangeEvent, FC, useMemo, useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import useSWR from 'swr';
 import LoadingOverlay from '../loading-overlay';
+import SimpleBar from 'simplebar-react';
 
 interface TheaterListProps {
     cinema?: string | null;
@@ -49,7 +50,7 @@ const TheaterList: FC<TheaterListProps> = ({ cinema, city }) => {
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-[550px]">
             <div className="p-3">
                 <TextField
                     placeholder="Tìm theo tên rạp ..."
@@ -67,7 +68,7 @@ const TheaterList: FC<TheaterListProps> = ({ cinema, city }) => {
                 />
             </div>
             <Divider />
-            <div className="relative flex-1">
+            <SimpleBar className="relative flex-1 overflow-clip" forceVisible="x">
                 {isLoading && !data ? (
                     <LoadingOverlay />
                 ) : (
@@ -90,7 +91,7 @@ const TheaterList: FC<TheaterListProps> = ({ cinema, city }) => {
                         ))}
                     </MenuList>
                 )}
-            </div>
+            </SimpleBar>
         </div>
     );
 };

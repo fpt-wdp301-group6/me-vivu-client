@@ -23,7 +23,7 @@ const ShowtimesBox = () => {
                 <CityPicker value={city} onChange={handleChangeCity} />
                 <CinemaPicker value={cinema} onChange={handleChangeCinema} />
             </div>
-            <div className="grid grid-cols-3 h-[550px]">
+            <div className="grid grid-cols-3">
                 <div className="col-span-1 border-r">
                     <TheaterList city={city} cinema={cinema} />
                 </div>
