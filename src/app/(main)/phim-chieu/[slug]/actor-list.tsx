@@ -3,7 +3,8 @@ import { FC } from 'react';
 import { fetcher } from '@/configs/tmdb';
 import useSWR from 'swr';
 import Actor from '@/types/credits';
-import ActorCard, { ActorCardSkeleton } from '@/components/actor-card';
+import { ActorCard } from '@/components';
+import { ActorCardSkeleton } from '@/components/actor-card';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 
