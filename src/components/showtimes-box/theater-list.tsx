@@ -4,7 +4,7 @@ import { useDebounce } from '@/hooks';
 import Theater from '@/types/theater';
 import { Divider, InputAdornment, ListItemIcon, ListItemText, MenuItem, MenuList, TextField } from '@mui/material';
 import Image from 'next/image';
-import { ChangeEvent, FC, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import useSWR from 'swr';
 import LoadingOverlay from '../loading-overlay';
@@ -13,9 +13,10 @@ import SimpleBar from 'simplebar-react';
 interface TheaterListProps {
     cinema?: string | null;
     city?: string;
+    onTheaterClick?: (theater: Theater | undefined) => void;
 }
 
-const TheaterList: FC<TheaterListProps> = ({ cinema, city }) => {
+const TheaterList: FC<TheaterListProps> = ({ cinema, city, onTheaterClick }) => {
     const [search, setSearch] = useState<string>();
     const searchContent = useDebounce(search, 300);
 
@@ -42,11 +43,20 @@ const TheaterList: FC<TheaterListProps> = ({ cinema, city }) => {
         revalidateOnReconnect: false,
     });
 
+    useEffect(() => {
+        if (data && data.data.length > 0) handleChange(data.data[0]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
+
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         if (!value.startsWith(' ')) {
             setSearch(value);
         }
+    };
+
+    const handleChange = (theater: Theater) => {
+        onTheaterClick?.(theater);
     };
 
     return (
@@ -74,7 +84,7 @@ const TheaterList: FC<TheaterListProps> = ({ cinema, city }) => {
                 ) : (
                     <MenuList disablePadding>
                         {data?.data.map((theater: Theater) => (
-                            <MenuItem className="py-2" key={theater._id}>
+                            <MenuItem className="py-2" key={theater._id} onClick={() => handleChange(theater)}>
                                 <ListItemIcon>
                                     <Image
                                         src={theater.cinema.logo}

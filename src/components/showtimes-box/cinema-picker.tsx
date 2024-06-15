@@ -9,7 +9,6 @@ import clsx from 'clsx';
 
 interface CinemaPickerProps {
     value?: string | null;
-    // eslint-disable-next-line no-unused-vars
     onChange?: (value: string | null) => void;
 }
 
