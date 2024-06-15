@@ -34,3 +34,7 @@
         opacity: 0;
     }
 }
+
+.simplebar-scrollbar::before {
+    background-color: var(--white);
+}

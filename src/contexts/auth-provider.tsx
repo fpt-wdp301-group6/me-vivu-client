@@ -51,9 +51,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 
 interface AuthContextProps extends AuthState {
     dispatch: Dispatch<AuthAction>;
-    // eslint-disable-next-line no-unused-vars
     login: (credentials: { email: string; password: string }) => Promise<void>;
-    // eslint-disable-next-line no-unused-vars
     loginByOthers: (data: any) => Promise<void>;
     logout: () => Promise<void>;
 }
