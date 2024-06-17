@@ -4,7 +4,12 @@ import Theater from '@/types/theater';
 import Image from 'next/image';
 import Link from 'next/link';
 import DateChooser from './date-chooser';
-import { Divider } from '@mui/material';
+import { Button, Divider } from '@mui/material';
+import useSWR from 'swr';
+import { fetcher } from '@/configs/api';
+import MovieImage from '../movie-image';
+import ShowtimesByMovie from '@/types/showtimes-by-movie';
+import { formats } from '@/utils';
 
 interface ShowtimeListProps {
     date: Date;
@@ -13,6 +18,12 @@ interface ShowtimeListProps {
 }
 
 const ShowtimeList: FC<ShowtimeListProps> = ({ theater, date, onDateChange }) => {
+    const { data, error } = useSWR(`/showtimes/${theater?._id}/list?date=${date.toDateString()}`, fetcher, {
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+    });
+
     return (
         <div>
             {theater && (
@@ -34,6 +45,38 @@ const ShowtimeList: FC<ShowtimeListProps> = ({ theater, date, onDateChange }) =>
             )}
             <DateChooser value={date} onChange={onDateChange} />
             <Divider className="border-white" />
+            {data &&
+                (data?.data as ShowtimesByMovie[]).map((item) => <ShowtimeByMovie data={item} key={item.movie.id} />)}
+        </div>
+    );
+};
+
+interface ShowtimeByMovieProps {
+    data: ShowtimesByMovie;
+}
+
+const ShowtimeByMovie: FC<ShowtimeByMovieProps> = ({ data }) => {
+    return (
+        <div className="grid grid-cols-4 gap-4 p-4">
+            <div className="col-span-1">
+                <MovieImage
+                    src={`_bestv2${data.movie.poster_path}`}
+                    alt={data.movie.title}
+                    width={300}
+                    height={450}
+                    className="rounded-3xl shadow-md"
+                />
+            </div>
+            <div className="col-span-3 p-3">
+                <h5 className="font-semibold">{data.movie.title}</h5>
+                <div className="flex flex-wrap gap-4 mt-6">
+                    {data.showtimes.map((showtime) => (
+                        <Button variant="outlined" color="secondary" key={showtime._id}>
+                            {`${formats.time(showtime.startAt)} - ${formats.time(showtime.endAt)}`}
+                        </Button>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };
