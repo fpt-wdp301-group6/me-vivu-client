@@ -1,5 +1,5 @@
 'use client';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import Theater from '@/types/theater';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +11,8 @@ import MovieImage from '../movie-image';
 import ShowtimesByMovie from '@/types/showtimes-by-movie';
 import { formats } from '@/utils';
 import SimpleBar from 'simplebar-react';
+import SeatsModal from './seats-modal';
+import Showtime from '@/types/showtime';
 
 interface ShowtimeListProps {
     date: Date;
@@ -28,7 +30,7 @@ const ShowtimeList: FC<ShowtimeListProps> = ({ theater, date, onDateChange }) =>
     return (
         <div className="flex flex-col h-[550px]">
             {theater && (
-                <div className="flex items-center px-4 py-3 gap-3 bg-gray-800">
+                <div className="flex items-center gap-3 px-4 py-3 bg-gray-800">
                     <Image
                         src={theater.cinema.logo}
                         alt={theater.name}
@@ -46,7 +48,7 @@ const ShowtimeList: FC<ShowtimeListProps> = ({ theater, date, onDateChange }) =>
             )}
             <DateChooser value={date} onChange={onDateChange} />
             <Divider className="border-white" />
-            <SimpleBar className="flex-grow overflow-auto h-full">
+            <SimpleBar className="flex-grow h-full overflow-auto">
                 {data &&
                     (data?.data as ShowtimesByMovie[]).map((item) => (
                         <ShowtimeByMovie data={item} key={item.movie.id} />
@@ -61,6 +63,19 @@ interface ShowtimeByMovieProps {
 }
 
 const ShowtimeByMovie: FC<ShowtimeByMovieProps> = ({ data }) => {
+    const [open, setOpen] = useState(false);
+    const [showtime, setShowtime] = useState<Showtime | null>();
+
+    const handleOpen = (showtime: Showtime) => () => {
+        setOpen(true);
+        setShowtime(showtime);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setShowtime(null);
+    };
+
     return (
         <div className="grid grid-cols-4 gap-4 p-4 border-b">
             <div className="col-span-1">
@@ -69,22 +84,23 @@ const ShowtimeByMovie: FC<ShowtimeByMovieProps> = ({ data }) => {
                     alt={data.movie.title}
                     width={300}
                     height={450}
-                    className="rounded-3xl shadow-md"
+                    className="shadow-md rounded-3xl"
                 />
             </div>
             <div className="col-span-3 p-3">
                 <Link
                     href={`/phim-chieu/${formats.slugify(data.movie.title)}-${data.movie.id}`}
-                    className="font-semibold hover:text-primary transition-colors"
+                    className="font-semibold transition-colors hover:text-primary"
                 >
                     {data.movie.title}
                 </Link>
                 <div className="flex flex-wrap gap-4 mt-6">
                     {data.showtimes.map((showtime) => (
-                        <Button variant="outlined" color="secondary" key={showtime._id}>
+                        <Button variant="outlined" color="secondary" key={showtime._id} onClick={handleOpen(showtime)}>
                             {`${formats.time(showtime.startAt)} - ${formats.time(showtime.endAt)}`}
                         </Button>
                     ))}
+                    {showtime && <SeatsModal open={open} onClose={handleClose} showtime={showtime} />}
                 </div>
             </div>
         </div>
