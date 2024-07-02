@@ -8,6 +8,8 @@ import useSWR from 'swr';
 import { IoMdClose } from 'react-icons/io';
 import Movie from '@/types/movie';
 import { formats } from '@/utils';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import clsx from 'clsx';
 
 const variants = {
     initial: {
@@ -31,7 +33,7 @@ interface SeatsModalProps {
 }
 
 const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => {
-    const [seats, setSeats] = useState<(Seat | unknown)[][]>([[]]);
+    const [seats, setSeats] = useState<(Seat | undefined)[][]>([[]]);
     const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
 
     const { data } = useSWR(`/showtimes/${showtime._id}/seats`, fetcher, {
@@ -44,12 +46,12 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
         if (data) {
             const newSeats = [...seats];
             data.data.forEach((seat: Seat) => {
-                const countY = newSeats.length - seat.y - 2;
-                const countX = newSeats[0].length - seat.x - 2;
+                const countY = newSeats.length - seat.y - 1;
+                const countX = newSeats[0].length - seat.x - 1;
 
                 for (let i = 0; countY < 0 && i < -countY; i++) {
-                    const newRow = Array.from({ length: seats[0].length });
-                    newSeats.push(newRow);
+                    const newRow = Array.from({ length: seats[0].length }).fill(undefined);
+                    newSeats.push(newRow as undefined[]);
                 }
                 for (let i = 0; countX < 0 && i < -countX; i++) {
                     newSeats.forEach((row) => {
@@ -58,9 +60,6 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                 }
 
                 newSeats[seat.y][seat.x] = seat;
-                if (seat.type === SeatType.Couple) {
-                    newSeats[seat.y][seat.x + 1] = {};
-                }
             });
             setSeats(newSeats);
         }
@@ -85,7 +84,9 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                             </div>
                             Mua vé xem phim
                         </div>
-                        <div className="flex-1 bg-white/25"></div>
+                        <div className="flex-1 bg-white/25">
+                            <SeatMap seats={seats} />
+                        </div>
                         <div className="p-4 bg-dark">
                             <div className="font-bold">{movie.title}</div>
                             <div className="text-sm">{`${formats.time(showtime.startAt)} ~ ${formats.time(
@@ -119,6 +120,54 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                 </motion.div>
             </div>
         </Modal>
+    );
+};
+
+interface SeatMapProps {
+    seats: (Seat | undefined)[][];
+}
+
+const SeatMap: FC<SeatMapProps> = ({ seats }) => {
+    return (
+        <TransformWrapper centerOnInit centerZoomedOut limitToBounds minScale={0.5} maxScale={2} smooth>
+            <TransformComponent wrapperStyle={{ maxWidth: '100%', width: '100%', height: '100%' }}>
+                <div className="flex flex-col gap-4 p-10">
+                    <div className="text-center">
+                        <div className="inline-block h-1 bg-white w-80"></div>
+                        <div className="text-white">MÀN HÌNH</div>
+                    </div>
+                    <div
+                        className="inline-grid flex-1 gap-2"
+                        style={{
+                            gridTemplate: `repeat(${seats.length}, minmax(36px, 36px)) / repeat(${seats[0].length}, minmax(36px, 36px))`,
+                        }}
+                    >
+                        {seats.map((row, rowIndex) =>
+                            row.map(
+                                (seat, colIndex) =>
+                                    seat && (
+                                        <span
+                                            key={`${rowIndex}${colIndex}`}
+                                            style={{ gridColumn: colIndex + 1, gridRow: rowIndex + 1 }}
+                                            className={clsx(
+                                                'flex items-center justify-center flex-shrink-0 text-xs text-white h-9 cursor-pointer',
+                                                {
+                                                    'bg-teal-500': seat.type === SeatType.Normal,
+                                                    'bg-blue-500': seat.type === SeatType.VIP,
+                                                    'bg-pink-500': seat.type === SeatType.Couple,
+                                                },
+                                                seat.type === SeatType.Couple ? 'w-20 rounded-full' : 'w-9 rounded-lg',
+                                            )}
+                                        >
+                                            {seat.name}
+                                        </span>
+                                    ),
+                            ),
+                        )}
+                    </div>
+                </div>
+            </TransformComponent>
+        </TransformWrapper>
     );
 };
 
