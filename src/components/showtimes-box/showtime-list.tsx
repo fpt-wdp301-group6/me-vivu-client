@@ -100,7 +100,9 @@ const ShowtimeByMovie: FC<ShowtimeByMovieProps> = ({ data }) => {
                             {`${formats.time(showtime.startAt)} - ${formats.time(showtime.endAt)}`}
                         </Button>
                     ))}
-                    {showtime && <SeatsModal open={open} onClose={handleClose} showtime={showtime} />}
+                    {showtime && (
+                        <SeatsModal open={open} onClose={handleClose} showtime={showtime} movie={data.movie} />
+                    )}
                 </div>
             </div>
         </div>

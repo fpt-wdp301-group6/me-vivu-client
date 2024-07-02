@@ -1,3 +1,5 @@
+import slugifyReact from 'slugify';
+
 const date = (value: string | Date = '') => {
     let date: Date;
 
@@ -27,7 +29,30 @@ const time = (value: string) => {
     return `${hours}:${minutes}`;
 };
 
-import slugifyReact from 'slugify';
+const dayWeek = (date: string | Date) => {
+    const daysOfWeek = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+
+    const today = new Date();
+    const inputDate = new Date(date);
+
+    let dayOfWeek = daysOfWeek[inputDate.getDay()];
+
+    if (today.toDateString() === inputDate.toDateString()) {
+        dayOfWeek = 'Hôm nay';
+    }
+
+    const options: Intl.DateTimeFormatOptions = {
+        month: '2-digit',
+        day: '2-digit',
+    };
+
+    return `${dayOfWeek}, ${inputDate.toLocaleDateString('vi-VN', options)}`;
+};
+
+const price = (price: number, discount: number = 0): string => {
+    const finalPrice = price - price * discount * 100;
+    return finalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+};
 
 const slugify = (value: string) => {
     return slugifyReact(value, {
@@ -49,6 +74,6 @@ const genre = (value: string) => {
     return value;
 };
 
-const formats = { date, time, slugify, genre };
+const formats = { date, time, dayWeek, price, slugify, genre };
 
 export default formats;

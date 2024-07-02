@@ -3,6 +3,7 @@ interface Showtime {
     movieId: string;
     room: {
         _id: string;
+        name: string;
         seats: string[];
     };
     reservedSeats: string;
