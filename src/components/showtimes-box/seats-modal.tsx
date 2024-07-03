@@ -10,6 +10,8 @@ import Movie from '@/types/movie';
 import { formats } from '@/utils';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import clsx from 'clsx';
+import { useBooking } from '@/hooks';
+import FoodsModal from './foods-modal';
 
 const variants = {
     initial: {
@@ -20,7 +22,7 @@ const variants = {
         y: 0,
         opacity: 1,
         transition: {
-            duration: 0.75,
+            duration: 0.5,
         },
     },
 };
@@ -33,8 +35,17 @@ interface SeatsModalProps {
 }
 
 const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => {
-    const [seats, setSeats] = useState<(Seat | undefined)[][]>([[]]);
-    const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
+    const [seats, setSeats] = useState<(Seat | undefined)[][]>();
+    const { selectedSeats, removeSelectedSeats } = useBooking();
+    const [openModal, setOpenModal] = useState(false);
+
+    const handleOpen = () => {
+        setOpenModal(true);
+    };
+
+    const handleClose = () => {
+        setOpenModal(false);
+    };
 
     const { data } = useSWR(`/showtimes/${showtime._id}/seats`, fetcher, {
         revalidateIfStale: false,
@@ -44,13 +55,13 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
 
     useEffect(() => {
         if (data) {
-            const newSeats = [...seats];
+            const newSeats: (Seat | undefined)[][] = [[]];
             data.data.forEach((seat: Seat) => {
                 const countY = newSeats.length - seat.y - 1;
                 const countX = newSeats[0].length - seat.x - 1;
 
                 for (let i = 0; countY < 0 && i < -countY; i++) {
-                    const newRow = Array.from({ length: seats[0].length }).fill(undefined);
+                    const newRow = Array.from({ length: newSeats[0].length }).fill(undefined);
                     newSeats.push(newRow as undefined[]);
                 }
                 for (let i = 0; countX < 0 && i < -countX; i++) {
@@ -65,16 +76,6 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
-
-    const handleSelectSeat = (seat: Seat) => {
-        let selectingSeats = [...selectedSeats];
-        if (selectingSeats.includes(seat)) {
-            selectingSeats = selectingSeats.filter((item) => item._id !== seat._id);
-        } else {
-            selectingSeats.push(seat);
-        }
-        setSelectedSeats(selectingSeats);
-    };
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -94,9 +95,7 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                             </div>
                             Mua vé xem phim
                         </div>
-                        <div className="flex-1 bg-white/25">
-                            <SeatMap seats={seats} selectedSeats={selectedSeats} onSelectSeat={handleSelectSeat} />
-                        </div>
+                        <div className="flex-1 bg-white/25">{seats && <SeatMap seats={seats} />}</div>
                         <div className="bg-white/25">
                             <div className="flex flex-wrap items-center justify-center gap-6 p-6">
                                 <div className="flex items-center gap-2">
@@ -133,7 +132,7 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                                     <Chip
                                         label={selectedSeats.map((seat) => seat.name).join(', ')}
                                         variant="outlined"
-                                        onDelete={() => setSelectedSeats([])}
+                                        onDelete={removeSelectedSeats}
                                     />
                                 )}
                             </div>
@@ -145,13 +144,14 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                                         {formats.price(selectedSeats.reduce((total) => (total += 60000), 0))}
                                     </div>
                                 </div>
-                                <Button size="large" disabled={selectedSeats.length === 0}>
+                                <Button size="large" disabled={selectedSeats.length === 0} onClick={handleOpen}>
                                     Mua vé
                                 </Button>
                             </div>
                         </div>
                     </div>
                 </motion.div>
+                <FoodsModal open={openModal} onClose={handleClose} />
             </div>
         </Modal>
     );
@@ -159,17 +159,18 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
 
 interface SeatMapProps {
     seats: (Seat | undefined)[][];
-    selectedSeats: Seat[];
-    onSelectSeat: (seat: Seat) => void;
 }
 
-const SeatMap: FC<SeatMapProps> = ({ seats, selectedSeats, onSelectSeat }) => {
+const SeatMap: FC<SeatMapProps> = ({ seats }) => {
+    const { selectedSeats, changeSelectedSeats } = useBooking();
+
     const handleClickSeat = (seat: Seat) => () => {
-        onSelectSeat(seat);
+        changeSelectedSeats(seat);
     };
 
     return (
         <TransformWrapper
+            centerOnInit
             centerZoomedOut
             limitToBounds
             minScale={0.5}

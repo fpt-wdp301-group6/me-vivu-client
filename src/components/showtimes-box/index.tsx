@@ -5,12 +5,10 @@ import CityPicker from '../city-picker';
 import CinemaPicker from './cinema-picker';
 import TheaterList from './theater-list';
 import ShowtimeList from './showtime-list';
-import Theater from '@/types/theater';
 
 const ShowtimesBox = () => {
     const [city, setCity] = useState('48');
     const [cinema, setCinema] = useState<string | null>(null);
-    const [theater, setTheater] = useState<Theater | undefined>();
     const [date, setDate] = useState<Date>(new Date());
 
     const handleChangeCity = (e: ChangeEvent<HTMLInputElement>) => {
@@ -19,10 +17,6 @@ const ShowtimesBox = () => {
 
     const handleChangeCinema = (value: string | null) => {
         setCinema(value);
-    };
-
-    const handleChangeTheater = (theater: Theater | undefined) => {
-        setTheater(theater);
     };
 
     const handleChangeDate = (date: Date) => {
@@ -37,10 +31,10 @@ const ShowtimesBox = () => {
             </div>
             <div className="grid grid-cols-3">
                 <div className="col-span-1 border-r">
-                    <TheaterList city={city} cinema={cinema} onTheaterClick={handleChangeTheater} />
+                    <TheaterList city={city} cinema={cinema} />
                 </div>
                 <div className="col-span-2">
-                    <ShowtimeList theater={theater} date={date} onDateChange={handleChangeDate} />
+                    <ShowtimeList date={date} onDateChange={handleChangeDate} />
                 </div>
             </div>
         </Paper>

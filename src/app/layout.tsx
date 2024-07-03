@@ -8,6 +8,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'simplebar-react/dist/simplebar.min.css';
 import './globals.scss';
+import BookingProvider from '@/contexts/booking-provider';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -29,7 +30,9 @@ export default function RootLayout({
         <html lang="en">
             <body className={montserrat.className}>
                 <ThemeProvider>
-                    <AuthProvider>{children}</AuthProvider>
+                    <AuthProvider>
+                        <BookingProvider>{children}</BookingProvider>
+                    </AuthProvider>
                 </ThemeProvider>
             </body>
         </html>

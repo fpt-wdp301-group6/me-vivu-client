@@ -1,6 +1,5 @@
 'use client';
 import { FC, useState } from 'react';
-import Theater from '@/types/theater';
 import Image from 'next/image';
 import Link from 'next/link';
 import DateChooser from './date-chooser';
@@ -13,14 +12,15 @@ import { formats } from '@/utils';
 import SimpleBar from 'simplebar-react';
 import SeatsModal from './seats-modal';
 import Showtime from '@/types/showtime';
+import { useBooking } from '@/hooks';
 
 interface ShowtimeListProps {
     date: Date;
     onDateChange: (date: Date) => void;
-    theater?: Theater;
 }
 
-const ShowtimeList: FC<ShowtimeListProps> = ({ theater, date, onDateChange }) => {
+const ShowtimeList: FC<ShowtimeListProps> = ({ date, onDateChange }) => {
+    const { theater } = useBooking();
     const { data } = useSWR(`/showtimes/${theater?._id}/list?date=${date.toDateString()}`, fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
@@ -64,7 +64,7 @@ interface ShowtimeByMovieProps {
 
 const ShowtimeByMovie: FC<ShowtimeByMovieProps> = ({ data }) => {
     const [open, setOpen] = useState(false);
-    const [showtime, setShowtime] = useState<Showtime | null>();
+    const { showtime, setShowtime, resetBooking } = useBooking();
 
     const handleOpen = (showtime: Showtime) => () => {
         setOpen(true);
@@ -73,7 +73,7 @@ const ShowtimeByMovie: FC<ShowtimeByMovieProps> = ({ data }) => {
 
     const handleClose = () => {
         setOpen(false);
-        setShowtime(null);
+        resetBooking();
     };
 
     return (

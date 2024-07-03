@@ -1,4 +1,5 @@
 export { default as useAuth } from './useAuth';
+export { default as useBooking } from './useBooking';
 export { default as useDebounce } from './useDebounce';
 export { default as useMount } from './useMount';
 export { default as useUpdateEffect } from './useUpdateEffect';

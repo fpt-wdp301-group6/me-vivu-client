@@ -1,6 +1,6 @@
 'use client';
 import { fetcher } from '@/configs/api';
-import { useDebounce } from '@/hooks';
+import { useBooking, useDebounce } from '@/hooks';
 import Theater from '@/types/theater';
 import { Divider, InputAdornment, ListItemIcon, ListItemText, MenuItem, MenuList, TextField } from '@mui/material';
 import Image from 'next/image';
@@ -13,12 +13,12 @@ import SimpleBar from 'simplebar-react';
 interface TheaterListProps {
     cinema?: string | null;
     city?: string;
-    onTheaterClick?: (theater: Theater | undefined) => void;
 }
 
-const TheaterList: FC<TheaterListProps> = ({ cinema, city, onTheaterClick }) => {
+const TheaterList: FC<TheaterListProps> = ({ cinema, city }) => {
     const [search, setSearch] = useState<string>();
     const searchContent = useDebounce(search, 300);
+    const { setTheater } = useBooking();
 
     const url = useMemo(() => {
         const params = new URLSearchParams();
@@ -56,7 +56,7 @@ const TheaterList: FC<TheaterListProps> = ({ cinema, city, onTheaterClick }) => 
     };
 
     const handleChange = (theater: Theater) => {
-        onTheaterClick?.(theater);
+        setTheater(theater);
     };
 
     return (
