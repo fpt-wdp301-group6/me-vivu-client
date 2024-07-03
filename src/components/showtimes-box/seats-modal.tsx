@@ -1,5 +1,5 @@
 import { fetcher } from '@/configs/api';
-import Seat, { SeatType } from '@/types/seat';
+import Seat, { SeatStatus, SeatType } from '@/types/seat';
 import Showtime from '@/types/showtime';
 import { Button, Chip, Divider, IconButton, Modal } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
@@ -66,6 +66,16 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
+    const handleSelectSeat = (seat: Seat) => {
+        let selectingSeats = [...selectedSeats];
+        if (selectingSeats.includes(seat)) {
+            selectingSeats = selectingSeats.filter((item) => item._id !== seat._id);
+        } else {
+            selectingSeats.push(seat);
+        }
+        setSelectedSeats(selectingSeats);
+    };
+
     return (
         <Modal open={open} onClose={onClose}>
             <div className="flex justify-center w-screen h-screen p-4 pointer-events-none">
@@ -85,7 +95,31 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                             Mua vé xem phim
                         </div>
                         <div className="flex-1 bg-white/25">
-                            <SeatMap seats={seats} />
+                            <SeatMap seats={seats} selectedSeats={selectedSeats} onSelectSeat={handleSelectSeat} />
+                        </div>
+                        <div className="bg-white/25">
+                            <div className="flex flex-wrap items-center justify-center gap-6 p-6">
+                                <div className="flex items-center gap-2">
+                                    <div className="bg-gray-500 rounded-sm size-4"></div>
+                                    <span className="text-sm">Đã đặt</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="border border-white rounded-sm bg-primary size-4"></div>
+                                    <span className="text-sm">Ghế bạn chọn</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="bg-teal-500 rounded-sm size-4"></div>
+                                    <span className="text-sm">Ghế thường</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="bg-blue-500 rounded-sm size-4"></div>
+                                    <span className="text-sm">Ghế VIP</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="bg-pink-500 rounded-sm size-4"></div>
+                                    <span className="text-sm">Ghế Sweetbox</span>
+                                </div>
+                            </div>
                         </div>
                         <div className="p-4 bg-dark">
                             <div className="font-bold">{movie.title}</div>
@@ -93,7 +127,7 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                                 showtime.endAt,
                             )} · ${formats.dayWeek(showtime.startAt)} · Phòng chiếu ${showtime.room.name}`}</div>
                             <Divider className="my-4" />
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between h-8">
                                 <span className="text-sm">Chỗ ngồi</span>
                                 {selectedSeats.length > 0 && (
                                     <Chip
@@ -125,11 +159,24 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
 
 interface SeatMapProps {
     seats: (Seat | undefined)[][];
+    selectedSeats: Seat[];
+    onSelectSeat: (seat: Seat) => void;
 }
 
-const SeatMap: FC<SeatMapProps> = ({ seats }) => {
+const SeatMap: FC<SeatMapProps> = ({ seats, selectedSeats, onSelectSeat }) => {
+    const handleClickSeat = (seat: Seat) => () => {
+        onSelectSeat(seat);
+    };
+
     return (
-        <TransformWrapper centerOnInit centerZoomedOut limitToBounds minScale={0.5} maxScale={2} smooth>
+        <TransformWrapper
+            centerZoomedOut
+            limitToBounds
+            minScale={0.5}
+            maxScale={2}
+            smooth
+            doubleClick={{ disabled: true }}
+        >
             <TransformComponent wrapperStyle={{ maxWidth: '100%', width: '100%', height: '100%' }}>
                 <div className="flex flex-col gap-4 p-10">
                     <div className="text-center">
@@ -143,26 +190,36 @@ const SeatMap: FC<SeatMapProps> = ({ seats }) => {
                         }}
                     >
                         {seats.map((row, rowIndex) =>
-                            row.map(
-                                (seat, colIndex) =>
-                                    seat && (
+                            row.map((seat, colIndex) => {
+                                if (seat) {
+                                    const selected = selectedSeats.includes(seat);
+                                    const cannotSelect = seat.status !== SeatStatus.Available;
+
+                                    return (
                                         <span
-                                            key={`${rowIndex}${colIndex}`}
+                                            key={seat._id}
                                             style={{ gridColumn: colIndex + 1, gridRow: rowIndex + 1 }}
                                             className={clsx(
-                                                'flex items-center justify-center flex-shrink-0 text-xs text-white h-9 cursor-pointer',
+                                                'flex items-center justify-center flex-shrink-0 text-xs font-semibold text-white h-9 cursor-pointer transition',
                                                 {
-                                                    'bg-teal-500': seat.type === SeatType.Normal,
-                                                    'bg-blue-500': seat.type === SeatType.VIP,
-                                                    'bg-pink-500': seat.type === SeatType.Couple,
+                                                    'bg-gray-500 pointer-events-none': cannotSelect,
+                                                    'bg-primary border border-white': selected,
+                                                    'bg-teal-500':
+                                                        !cannotSelect && !selected && seat.type === SeatType.Normal,
+                                                    'bg-blue-500':
+                                                        !cannotSelect && !selected && seat.type === SeatType.VIP,
+                                                    'bg-pink-500':
+                                                        !cannotSelect && !selected && seat.type === SeatType.Couple,
                                                 },
                                                 seat.type === SeatType.Couple ? 'w-20 rounded-full' : 'w-9 rounded-lg',
                                             )}
+                                            onClick={!cannotSelect ? handleClickSeat(seat) : undefined}
                                         >
                                             {seat.name}
                                         </span>
-                                    ),
-                            ),
+                                    );
+                                }
+                            }),
                         )}
                     </div>
                 </div>
