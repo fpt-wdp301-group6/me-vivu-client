@@ -10,6 +10,7 @@ import SimpleBar from 'simplebar-react';
 import { formats } from '@/utils';
 import Image from 'next/image';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
+import TicketModal from './ticket-modal';
 
 const variants = {
     initial: {
@@ -31,12 +32,21 @@ interface FoodsModalProps {
 }
 
 const FoodsModal: FC<FoodsModalProps> = ({ open, onClose }) => {
+    const [openModal, setOpenModal] = useState(false);
     const { theater, foods } = useBooking();
     const { data } = useSWR(`/foods/${theater?._id}`, fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
     });
+
+    const handleOpen = () => {
+        setOpenModal(true);
+    };
+
+    const handleClose = () => {
+        setOpenModal(false);
+    };
 
     const price = foods.reduce((total, food) => (total += food.price * (food.quantity || 0)), 0);
 
@@ -72,12 +82,13 @@ const FoodsModal: FC<FoodsModalProps> = ({ open, onClose }) => {
                                 <span className="text-gray-300">Tổng cộng</span>
                                 <span className="text-lg font-bold">{formats.price(price)}</span>
                             </div>
-                            <Button fullWidth size="large">
+                            <Button fullWidth size="large" onClick={handleOpen}>
                                 Tiếp tục
                             </Button>
                         </div>
                     </div>
                 </motion.div>
+                <TicketModal open={openModal} onClose={handleClose} />
             </div>
         </Modal>
     );

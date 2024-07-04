@@ -64,11 +64,12 @@ interface ShowtimeByMovieProps {
 
 const ShowtimeByMovie: FC<ShowtimeByMovieProps> = ({ data }) => {
     const [open, setOpen] = useState(false);
-    const { showtime, setShowtime, resetBooking } = useBooking();
+    const { showtime, setShowtime, setMovie, resetBooking } = useBooking();
 
     const handleOpen = (showtime: Showtime) => () => {
         setOpen(true);
         setShowtime(showtime);
+        setMovie(data.movie);
     };
 
     const handleClose = () => {
