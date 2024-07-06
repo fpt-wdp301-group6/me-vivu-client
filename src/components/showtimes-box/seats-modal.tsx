@@ -36,7 +36,7 @@ interface SeatsModalProps {
 
 const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => {
     const [seats, setSeats] = useState<(Seat | undefined)[][]>();
-    const { selectedSeats, removeSelectedSeats } = useBooking();
+    const { selectedSeats, seatsTotal, removeSelectedSeats } = useBooking();
     const [openModal, setOpenModal] = useState(false);
 
     const handleOpen = () => {
@@ -140,9 +140,7 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
                             <div className="flex items-center justify-between">
                                 <div>
                                     <div className="text-sm">Tạm tính</div>
-                                    <div className="text-lg font-bold">
-                                        {formats.price(selectedSeats.reduce((total) => (total += 60000), 0))}
-                                    </div>
+                                    <div className="text-lg font-bold">{formats.price(seatsTotal)}</div>
                                 </div>
                                 <Button size="large" disabled={selectedSeats.length === 0} onClick={handleOpen}>
                                     Mua vé

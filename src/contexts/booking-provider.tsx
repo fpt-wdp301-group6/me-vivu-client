@@ -1,5 +1,5 @@
 'use client';
-import { Dispatch, FC, ReactNode, createContext, useReducer } from 'react';
+import { Dispatch, FC, ReactNode, createContext, useMemo, useReducer } from 'react';
 import Food from '@/types/food';
 import Movie from '@/types/movie';
 import Seat from '@/types/seat';
@@ -50,6 +50,7 @@ const bookingReducer = (state: BookingState, action: BookingAction): BookingStat
 };
 
 interface BookingContextProps extends BookingState {
+    seatsTotal: number;
     dispatch: Dispatch<BookingAction>;
     setTheater: (theater?: Theater) => void;
     setShowtime: (showtime?: Showtime) => void;
@@ -68,6 +69,16 @@ interface BookingProviderProps {
 
 const BookingProvider: FC<BookingProviderProps> = ({ children }) => {
     const [state, dispatch] = useReducer(bookingReducer, initialState);
+
+    const seatsTotal = useMemo(() => {
+        const { showtime } = state;
+        if (showtime) {
+            return state.selectedSeats.reduce((total, seat) => (total += showtime.price[seat.type] || 0), 0);
+        } else {
+            return 0;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.selectedSeats, state.showtime]);
 
     const setTheater = (theater?: Theater) => {
         dispatch({ type: 'THEATER', payload: theater });
@@ -118,6 +129,7 @@ const BookingProvider: FC<BookingProviderProps> = ({ children }) => {
         <BookingContext.Provider
             value={{
                 ...state,
+                seatsTotal,
                 dispatch,
                 setTheater,
                 setShowtime,

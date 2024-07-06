@@ -6,6 +6,11 @@ interface Showtime {
         name: string;
         seats: string[];
     };
+    price: {
+        normal: number;
+        vip: number;
+        couple: number;
+    };
     reservedSeats: string;
     startAt: string;
     endAt: string;
