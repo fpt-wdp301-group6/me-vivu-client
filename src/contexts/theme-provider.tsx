@@ -3,6 +3,7 @@ import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 're
 import { ThemeMode, theme } from '@/theme';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material';
 import clsx from 'clsx';
+import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 
 interface ThemeContextProps {
     mode: ThemeMode;
@@ -23,6 +24,7 @@ const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     return (
         <ThemeContext.Provider value={{ mode, toggleTheme }}>
             <MuiThemeProvider theme={activeTheme}>
+                <ProgressBar height="4px" color="#ff0000" options={{ showSpinner: false }} shallowRouting />
                 <div
                     id="root"
                     className={clsx(

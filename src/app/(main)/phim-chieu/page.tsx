@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const MovieList = () => {
     return (
-        <div>
+        <>
             <div
                 className="relative h-48 font-semibold bg-no-repeat bg-cover"
                 style={{ backgroundImage: 'url(/images/backgrounds/footer-bg.jpg)' }}
@@ -16,7 +16,7 @@ const MovieList = () => {
                 <h1 className="absolute text-2xl -translate-x-1/2 bottom-8 left-1/2">Phim chiếu</h1>
             </div>
             <MoviePager />
-        </div>
+        </>
     );
 };
 

@@ -5,7 +5,7 @@ import { ShowtimesBox } from '@/components';
 
 const Home = () => {
     return (
-        <div>
+        <>
             <HeroSlide />
             <Container className="py-20">
                 <MovieCarousel
@@ -22,7 +22,7 @@ const Home = () => {
                 />
                 <ShowtimesBox />
             </Container>
-        </div>
+        </>
     );
 };
 

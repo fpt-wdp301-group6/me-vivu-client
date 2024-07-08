@@ -81,7 +81,9 @@ const Header = () => {
                         vertical: 'top',
                     }}
                 >
-                    <MenuItem onClick={handleClose}>Tài khoản</MenuItem>
+                    <MenuItem onClick={handleClose} component={Link} href="/tai-khoan/chung">
+                        Tài khoản
+                    </MenuItem>
                     <MenuItem onClick={handleClose}>Lịch sử</MenuItem>
                     <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
                 </Menu>
