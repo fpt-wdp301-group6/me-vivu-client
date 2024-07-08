@@ -9,6 +9,7 @@ import api from '@/configs/api';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useRouter } from 'next/navigation';
 
 const schema = yup
     .object({
@@ -49,6 +50,7 @@ const TicketModal: FC<TicketModalProps> = ({ open, onClose }) => {
     } = useForm({
         resolver: yupResolver(schema),
     });
+    const router = useRouter();
 
     const total = useMemo(
         () => seatsTotal + foods.reduce((total, food) => (total += food.price * (food.quantity || 0)), 0),
@@ -63,6 +65,7 @@ const TicketModal: FC<TicketModalProps> = ({ open, onClose }) => {
                 phone: data.phone,
                 showtime: showtime._id,
                 theater: theater._id,
+                code: Date.now(),
                 total: total,
                 foods: foods.map((food) => ({ item: food._id, quantity: food.quantity })),
                 seats: selectedSeats.map((seat) => seat._id),
@@ -70,9 +73,9 @@ const TicketModal: FC<TicketModalProps> = ({ open, onClose }) => {
                 .then((res: any) => {
                     const path = window.location.origin;
                     api.post(`/tickets/${res._id}/payment-link`, {
-                        returnUrl: `${path}/`,
-                        cancelUrl: `${path}/phim-chieu`,
-                    }).then((res) => (window.location.href = res.data));
+                        returnUrl: `${path}/thanh-toan`,
+                        cancelUrl: `${path}/thanh-toan`,
+                    }).then((res) => router.push(res.data));
                 })
                 .catch((err) => console.log(err));
         }
