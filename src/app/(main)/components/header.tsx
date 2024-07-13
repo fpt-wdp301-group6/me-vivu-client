@@ -1,6 +1,6 @@
 'use client';
 import { useAuth } from '@/hooks';
-import { Avatar, Button, Container, IconButton, Menu, MenuItem } from '@mui/material';
+import { Avatar, Button, Container, Divider, IconButton, Menu, MenuItem } from '@mui/material';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -64,29 +64,36 @@ const Header = () => {
                         <TiThMenu />
                     </IconButton>
                 </div>
-                <Menu
-                    id="user-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
-                    anchorOrigin={{
-                        horizontal: 'right',
-                        vertical: 'bottom',
-                    }}
-                    transformOrigin={{
-                        horizontal: 'right',
-                        vertical: 'top',
-                    }}
-                >
-                    <MenuItem onClick={handleClose} component={Link} href="/tai-khoan/chung">
-                        Tài khoản
-                    </MenuItem>
-                    <MenuItem onClick={handleClose}>Lịch sử</MenuItem>
-                    <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
-                </Menu>
+                {user && (
+                    <Menu
+                        id="user-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                        }}
+                        anchorOrigin={{
+                            horizontal: 'right',
+                            vertical: 'bottom',
+                        }}
+                        transformOrigin={{
+                            horizontal: 'right',
+                            vertical: 'top',
+                        }}
+                    >
+                        <div className="px-4 py-2">
+                            <h6 className="text-sm font-semibold">{user.name}</h6>
+                            <span className="text-xs">{user.email}</span>
+                        </div>
+                        <Divider />
+                        <MenuItem onClick={handleClose} component={Link} href="/tai-khoan/chung">
+                            Tài khoản
+                        </MenuItem>
+                        <MenuItem onClick={handleClose}>Lịch sử</MenuItem>
+                        <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                    </Menu>
+                )}
             </Container>
         </header>
     );

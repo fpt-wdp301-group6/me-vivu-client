@@ -47,11 +47,7 @@ const SeatsModal: FC<SeatsModalProps> = ({ open, movie, showtime, onClose }) => 
         setOpenModal(false);
     };
 
-    const { data } = useSWR(`/showtimes/${showtime._id}/seats`, fetcher, {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-    });
+    const { data } = useSWR(`/showtimes/${showtime._id}/seats`, fetcher);
 
     useEffect(() => {
         if (data) {
