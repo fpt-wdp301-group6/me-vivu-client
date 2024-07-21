@@ -97,7 +97,13 @@ const ShowtimeByMovie: FC<ShowtimeByMovieProps> = ({ data }) => {
                 </Link>
                 <div className="flex flex-wrap gap-4 mt-6">
                     {data.showtimes.map((showtime) => (
-                        <Button variant="outlined" color="secondary" key={showtime._id} onClick={handleOpen(showtime)}>
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            disabled={new Date(showtime.startAt) < new Date()}
+                            key={showtime._id}
+                            onClick={handleOpen(showtime)}
+                        >
                             {`${formats.time(showtime.startAt)} - ${formats.time(showtime.endAt)}`}
                         </Button>
                     ))}

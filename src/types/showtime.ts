@@ -1,3 +1,5 @@
+import Movie from './movie';
+
 interface Showtime {
     _id: string;
     movieId: string;
@@ -11,6 +13,7 @@ interface Showtime {
         vip: number;
         couple: number;
     };
+    movie?: Movie;
     reservedSeats: string;
     startAt: string;
     endAt: string;
