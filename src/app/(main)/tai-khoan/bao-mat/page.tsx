@@ -1,5 +1,7 @@
+import ChangePassword from './change-password';
+
 const Security = () => {
-    return <div>Security</div>;
+    return <ChangePassword />;
 };
 
 export default Security;
