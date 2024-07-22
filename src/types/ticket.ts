@@ -26,6 +26,7 @@ interface Ticket {
         quantity: number;
     }[];
     seats: Seat[];
+    updatedAt: string;
 }
 
 export default Ticket;

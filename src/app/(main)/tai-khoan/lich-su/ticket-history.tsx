@@ -71,7 +71,7 @@ const TicketHistory = () => {
                     </div>
                 </Paper>
             ))}
-            <TicketModal open={!!ticket} onClose={handleClose} ticket={ticket} />
+            {ticket && <TicketModal open={!!ticket} onClose={handleClose} ticket={ticket} />}
         </div>
     );
 };
