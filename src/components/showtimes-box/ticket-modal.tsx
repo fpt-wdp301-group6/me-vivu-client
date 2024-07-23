@@ -2,7 +2,7 @@
 import { FC, useMemo } from 'react';
 import { Button, Divider, IconButton, Modal, TextField } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useBooking } from '@/hooks';
+import { useAuth, useBooking } from '@/hooks';
 import { constants, formats } from '@/utils';
 import { IoMdClose } from 'react-icons/io';
 import api from '@/configs/api';
@@ -51,6 +51,7 @@ const TicketModal: FC<TicketModalProps> = ({ open, onClose }) => {
         resolver: yupResolver(schema),
     });
     const router = useRouter();
+    const { user } = useAuth();
 
     const total = useMemo(
         () => seatsTotal + foods.reduce((total, food) => (total += food.price * (food.quantity || 0)), 0),
@@ -155,6 +156,7 @@ const TicketModal: FC<TicketModalProps> = ({ open, onClose }) => {
                                     </div>
                                     <TextField
                                         label="Họ tên"
+                                        defaultValue={user?.name}
                                         {...register('name')}
                                         error={!!errors.name}
                                         helperText={errors.name?.message}
@@ -162,6 +164,7 @@ const TicketModal: FC<TicketModalProps> = ({ open, onClose }) => {
                                     <TextField
                                         label="Email"
                                         type="email"
+                                        defaultValue={user?.email}
                                         {...register('email')}
                                         error={!!errors.email}
                                         helperText={errors.email?.message}
