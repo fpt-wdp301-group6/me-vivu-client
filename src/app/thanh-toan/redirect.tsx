@@ -26,7 +26,7 @@ const Redirect = () => {
         <div className="mt-8">
             <p>Bạn sẽ được chuyển tiếp về trang chủ sau {count} giây.</p>
             <div className="flex items-center justify-center gap-4 mt-6">
-                <Button size="large" variant="outlined" color="secondary">
+                <Button size="large" variant="outlined" color="secondary" component={Link} href="/tai-khoan/lich-su">
                     Lịch sử đặt vé
                 </Button>
                 <Button size="large" component={Link} href="/">
