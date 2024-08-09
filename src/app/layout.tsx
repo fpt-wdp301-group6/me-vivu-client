@@ -15,7 +15,7 @@ const montserrat = Montserrat({ subsets: ['latin'] });
 export const metadata: Metadata = {
     title: {
         template: '%s | meVivu',
-        default: 'meVivu',
+        default: 'meVivu jkhkjhkjnmk',
         absolute: 'Vi vu đặt vé online | meVivu',
     },
     description: 'Vi vu đặt vé online',
